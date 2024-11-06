@@ -1,0 +1,52 @@
+import re
+
+class VersionManager:
+    """
+    A class to manage versioning for Python projects following semantic versioning.
+    """
+
+    def __init__(self, version: str):
+        self.version = version
+        self.validate_version()
+
+    def validate_version(self):
+        """
+        Validate the version format. It must match the semantic versioning pattern.
+        """
+        pattern = r'^\d+\.\d+(\.\d+)?([a-zA-Z0-9-]+)?$'
+        if not re.match(pattern, self.version):
+            raise ValueError(f"Invalid version format: {self.version}")
+
+    def bump_major(self):
+        """
+        Increment the major version.
+        """
+        major, minor, patch = self._parse_version()
+        self.version = f"{major + 1}.0.0"
+
+    def bump_minor(self):
+        """
+        Increment the minor version.
+        """
+        major, minor, patch = self._parse_version()
+        self.version = f"{major}.{minor + 1}.0"
+
+    def bump_patch(self):
+        """
+        Increment the patch version.
+        """
+        major, minor, patch = self._parse_version()
+        self.version = f"{major}.{minor}.{patch + 1}"
+
+    def _parse_version(self):
+        """
+        Parse the version string into major, minor, and patch components.
+        """
+        parts = self.version.split('.')
+        major = int(parts[0])
+        minor = int(parts[1]) if len(parts) > 1 else 0
+        patch = int(parts[2]) if len(parts) > 2 else 0
+        return major, minor, patch
+
+    def __str__(self):
+        return self.version
